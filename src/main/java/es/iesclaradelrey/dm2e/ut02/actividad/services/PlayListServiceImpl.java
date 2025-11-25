@@ -17,7 +17,7 @@ public class PlayListServiceImpl implements PlayListService {
         try{
            return dataAccess.findById(id);
         }catch (Exception e){
-            throw new RuntimeException("Error al buscar la playlist con id" + id, e);
+            throw new RuntimeException("Error al buscar la playlist con id " + id, e);
         }
     }
 

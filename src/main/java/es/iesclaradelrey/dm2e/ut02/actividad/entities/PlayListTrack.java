@@ -10,8 +10,8 @@ import lombok.*;
 @ToString
 public class PlayListTrack {
 
-    private Integer playListTrackId;
-    private Integer trackId;
+   private Integer playListId;
+   private Integer trackId;
     private String trackName;
 
     public PlayListTrack(Integer trackId, String trackName) {

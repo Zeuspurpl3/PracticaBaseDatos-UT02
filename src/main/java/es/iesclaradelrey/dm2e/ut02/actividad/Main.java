@@ -251,7 +251,7 @@ public class Main {
         }
 
         PlayList pl = opt.get();
-        System.out.println("Playlist: " + pl.getName());
+        System.out.println("Playlist: " + pl.getPlayListId() +" " + pl.getName());
         System.out.println("Tracks:");
         pl.getPlayListTracks().forEach(
                 t -> System.out.println(t.getTrackId() + " - " + t.getTrackName())

@@ -40,11 +40,13 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
                     try(ResultSet rsTracks = pstmt.executeQuery()){
                         while(rsTracks.next()){
                             PlayListTrack track = PlayListTrack.builder()
-                                    .playListTrackId(rsTracks.getInt("playlist_track_id"))
+                                    .playListId(rsTracks.getInt("playlist_id"))
                                     .trackId(rsTracks.getInt("track_id"))
                                     .trackName(rsTracks.getString("track_name"))
                                     .build();
+
                         }
+
                     }
                 }
                 return Optional.of(playList);
@@ -85,10 +87,10 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
                     stmtTracks.setInt(2, track.getTrackId());
                     stmtTracks.executeUpdate();
 
-                    // Obtener playlist_track_id generado
+                    // Obtener playlist_id generado
                     try (ResultSet rsKeys = stmtTracks.getGeneratedKeys()) {
                         if (rsKeys.next()) {
-                            track.setPlayListTrackId(rsKeys.getInt(1));
+                            track.setPlayListId(rsKeys.getInt(1));
                         }
                     }
                 }
@@ -127,7 +129,7 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
 
             if (rowsDeleted == 0) {
                 conn.rollback();
-                return false; // no existía la playlist
+                return false;
             }
 
             conn.commit();
