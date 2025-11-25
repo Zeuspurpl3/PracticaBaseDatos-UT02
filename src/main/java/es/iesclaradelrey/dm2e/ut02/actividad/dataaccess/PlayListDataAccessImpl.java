@@ -44,11 +44,14 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
                                     .trackId(rsTracks.getInt("track_id"))
                                     .trackName(rsTracks.getString("track_name"))
                                     .build();
+                            playList.getPlayListTracks().add(track);
 
                         }
 
                     }
+
                 }
+
                 return Optional.of(playList);
             }
 
