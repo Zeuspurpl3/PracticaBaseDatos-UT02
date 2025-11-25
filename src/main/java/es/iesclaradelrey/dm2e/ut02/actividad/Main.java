@@ -12,9 +12,7 @@ import es.iesclaradelrey.dm2e.ut02.actividad.services.GenreService;
 import es.iesclaradelrey.dm2e.ut02.actividad.services.GenreServiceImpl;
 import es.iesclaradelrey.dm2e.ut02.actividad.services.PlayListService;
 import es.iesclaradelrey.dm2e.ut02.actividad.services.PlayListServiceImpl;
-import es.iesclaradelrey.dm2e.ut02.actividad.util.Pool;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

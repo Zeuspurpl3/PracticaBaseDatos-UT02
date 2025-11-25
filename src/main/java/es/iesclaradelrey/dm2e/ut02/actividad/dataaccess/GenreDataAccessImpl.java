@@ -2,7 +2,7 @@ package es.iesclaradelrey.dm2e.ut02.actividad.dataaccess;
 
 import es.iesclaradelrey.dm2e.ut02.actividad.entities.Genre;
 
-import es.iesclaradelrey.dm2e.ut02.actividad.util.Pool;
+import es.iesclaradelrey.dm2e.ut02.actividad.util.ConnectionPool;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,13 +13,11 @@ public class GenreDataAccessImpl implements GenreDataAccess {
 
     @Override
     public List<Genre> findAll() {
-        String sql = "SELECT genreid, name FROM genre ORDER BY genreid";
+        String sql = "SELECT genre_id, name FROM genre ORDER BY genre_id";
         List<Genre> result = new ArrayList<>();
-        try (Connection conn = Pool.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                result.add(new Genre(rs.getInt("genreid"), rs.getString("name")));
+                result.add(new Genre(rs.getInt("genre_id"), rs.getString("name")));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error buscando todos los géneros: " + e.getMessage(), e);
@@ -29,31 +27,29 @@ public class GenreDataAccessImpl implements GenreDataAccess {
 
     @Override
     public List<Genre> findByName(String name) {
-        String sql = "SELECT genreid, name FROM genre WHERE LOWER(name) LIKE ? ORDER BY genreid";
+        String sql = "SELECT genre_id, name FROM genre WHERE LOWER(name) LIKE ? ORDER BY genre_id";
         List<Genre> result = new ArrayList<>();
-        try (Connection conn = Pool.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name.toLowerCase() + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    result.add(new Genre(rs.getInt("genreid"), rs.getString("name")));
+                    result.add(new Genre(rs.getInt("genre_id"), rs.getString("name")));
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error buscando géneros por nombre: " + e.getMessage(), e);
         }
-        return result;
+        return List.copyOf(result);
     }
 
     @Override
     public Optional<Genre> findById(int id) {
-        String sql = "SELECT genreid, name FROM genre WHERE genreid = ?";
-        try (Connection conn = Pool.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "SELECT genre_id, name FROM genre WHERE genre_id = ?";
+        try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(new Genre(rs.getInt("genreid"), rs.getString("name")));
+                    return Optional.of(new Genre(rs.getInt("genre_id"), rs.getString("name")));
                 }
                 return Optional.empty();
             }
@@ -64,9 +60,8 @@ public class GenreDataAccessImpl implements GenreDataAccess {
 
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM genre WHERE genreid = ?";
-        try (Connection conn = Pool.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "SELECT 1 FROM genre WHERE genre_id = ?";
+        try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -81,8 +76,7 @@ public class GenreDataAccessImpl implements GenreDataAccess {
         if (genre.getGenreId() == null) {
             // inserta
             String sql = "INSERT INTO genre(name) VALUES(?)";
-            try (Connection conn = Pool.getInstance().getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, genre.getName());
                 int affected = ps.executeUpdate();
                 if (affected == 0) throw new RuntimeException("No se pudo insertar el género.");
@@ -97,9 +91,8 @@ public class GenreDataAccessImpl implements GenreDataAccess {
             }
         } else {
             // actualiza
-            String sql = "UPDATE genre SET name = ? WHERE genreid = ?";
-            try (Connection conn = Pool.getInstance().getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
+            String sql = "UPDATE genre SET name = ? WHERE genre_id = ?";
+            try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, genre.getName());
                 ps.setInt(2, genre.getGenreId());
                 int affected = ps.executeUpdate();
@@ -113,9 +106,8 @@ public class GenreDataAccessImpl implements GenreDataAccess {
 
     @Override
     public boolean delete(int id) {
-        String sql = "DELETE FROM genre WHERE genreid = ?";
-        try (Connection conn = Pool.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "DELETE FROM genre WHERE genre_id = ?";
+        try (Connection conn = ConnectionPool.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             int affected = ps.executeUpdate();
             return affected > 0;

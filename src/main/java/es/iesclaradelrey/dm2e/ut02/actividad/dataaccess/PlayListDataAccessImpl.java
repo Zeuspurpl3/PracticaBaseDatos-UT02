@@ -2,8 +2,7 @@ package es.iesclaradelrey.dm2e.ut02.actividad.dataaccess;
 
 import es.iesclaradelrey.dm2e.ut02.actividad.entities.PlayList;
 import es.iesclaradelrey.dm2e.ut02.actividad.entities.PlayListTrack;
-import es.iesclaradelrey.dm2e.ut02.actividad.util.Pool;
-import es.iesclaradelrey.dm2e.ut02.actividad.util.Pool;
+import es.iesclaradelrey.dm2e.ut02.actividad.util.ConnectionPool;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
                 "JOIN track t ON pt.track_id = t.track_id " +
                 "WHERE pt.playlist_id = ?";
 
-        try(Connection conn = Pool.getInstance().getConnection();
+        try(Connection conn = ConnectionPool.getInstance().getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlPlayList)){
 
             stmt.setInt(1, id);
@@ -61,7 +60,7 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
         String sqlInsertPlaylist = "INSERT INTO playlist (name) VALUES (?)";
         String sqlInsertTrack = "INSERT INTO playlist_track (playlist_id, track_id) VALUES (?, ?)";
 
-        try (Connection conn = Pool.getInstance().getConnection()) {
+        try (Connection conn = ConnectionPool.getInstance().getConnection()) {
             conn.setAutoCommit(false);
 
             // Insertar playlist
@@ -110,7 +109,7 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
         String sqlDeleteTracks = "DELETE FROM playlist_track WHERE playlist_id = ?";
         String sqlDeletePlaylist = "DELETE FROM playlist WHERE playlist_id = ?";
 
-        try (Connection conn = Pool.getInstance().getConnection()) {
+        try (Connection conn = ConnectionPool.getInstance().getConnection()) {
             conn.setAutoCommit(false);
 
             // Borrar tracks asociados
