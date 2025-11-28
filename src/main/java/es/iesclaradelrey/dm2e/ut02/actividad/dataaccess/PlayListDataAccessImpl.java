@@ -101,7 +101,6 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
 
             conn.commit();
             return playlist;
-
         } catch (SQLException e) {
             throw new RuntimeException("Error al guardar la playlist " + playlist.getName(), e);
         }
@@ -117,13 +116,11 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
         try (Connection conn = ConnectionPool.getInstance().getConnection()) {
             conn.setAutoCommit(false);
 
-            // Borrar tracks asociados
             try (PreparedStatement stmt = conn.prepareStatement(sqlDeleteTracks)) {
                 stmt.setInt(1, id);
                 stmt.executeUpdate();
             }
 
-            // Borrar playlist
             int rowsDeleted;
             try (PreparedStatement stmt = conn.prepareStatement(sqlDeletePlaylist)) {
                 stmt.setInt(1, id);
@@ -134,14 +131,10 @@ public class PlayListDataAccessImpl implements PlayListDataAccess {
                 conn.rollback();
                 return false;
             }
-
             conn.commit();
             return true;
-
         } catch (SQLException e) {
             throw new RuntimeException("Error al borrar la playlist con id " + id, e);
         }
     }
-
-
 }
